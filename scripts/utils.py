@@ -49,7 +49,7 @@ def publication_dates(df):
     # Monthly trend
     df['month_start'] = df['date'].dt.floor('D') + MonthEnd(0) - MonthEnd(1)
 
-    monthly_counts = df.groupby(pd.Grouper(key='date', freq='ME')).size()
+    monthly_counts = df.groupby(df['date'].dt.to_period('M').dt.to_timestamp()).size()
 
     
     return {
@@ -93,7 +93,5 @@ def plot_publication_trends(date_analysis):
     axes[1, 1].xaxis.set_major_locator(mdates.AutoDateLocator())
     axes[1, 1].xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
     plt.setp(axes[1, 1].xaxis.get_majorticklabels(), rotation=45, ha='right')
-    
-    
     plt.tight_layout()
     return fig
