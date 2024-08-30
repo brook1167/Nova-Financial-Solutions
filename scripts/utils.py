@@ -130,3 +130,74 @@ def perform_topic_modeling(df, column='headline', topics_count=5, words_count=10
         extracted_topics.append(top_words)
     
     return extracted_topics
+
+# Time Series Analysis
+
+# Examine how article publication times are distributed across different hours of the day
+def publication_time_distribution(df):
+    df['date'] = pd.to_datetime(df['date'],format="ISO8601")
+    df['hour'] = df['date'].dt.hour
+    hourly_distribution = df['hour'].value_counts().sort_index()
+    
+    plt.figure(figsize=(12, 6))
+    hourly_distribution.plot(kind='bar')
+    plt.title('Hourly Distribution of Article Publications')
+    plt.xlabel('Hour of the Day')
+    plt.ylabel('Number of Articles Published')
+    plt.xticks(rotation=0)
+    plt.tight_layout()
+    plt.show()
+    
+    peak_hour = hourly_distribution.idxmax()
+    return f"The highest publication activity occurs at {peak_hour}:00"
+
+
+# Detect days with significantly higher publication activity
+def detect_publication_anomalies(df, threshold=2):
+    daily_counts = df.groupby(df['date'].dt.date).size()
+    mean_publications = daily_counts.mean()
+    std_publications = daily_counts.std()
+    
+    anomalies = daily_counts[daily_counts > mean_publications + threshold * std_publications]
+    return anomalies
+
+def analyze_publication_trends(df, date_column='date'):
+    # Convert the date column to datetime
+    df['publication_date'] = pd.to_datetime(df[date_column])
+    
+    # Extract day names for trend analysis
+    df['publication_day'] = df['publication_date'].dt.day_name()
+    publication_trends = df.groupby('publication_day').size()
+    
+    # Extract time for time series analysis
+    df['publication_time'] = df['publication_date'].dt.time
+    
+    # Plot publication frequency over time
+    df.set_index('publication_date').resample('D').size().plot()
+    plt.title('Publication Frequency Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Number of Articles')
+    plt.show()
+    
+    return publication_trends
+
+def plot_publication_frequency_by_day(df, date_column='date'):
+    # Convert the 'date' column to datetime format
+    df[date_column] = pd.to_datetime(df[date_column])
+    
+    # Set the 'date' column as the index
+    df.set_index(date_column, inplace=True)
+    
+    # Group by day of the week
+    weekly_publications = df.groupby(df.index.dayofweek).size()
+    
+    # Set the labels for the x-axis
+    days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    
+    # Plot the bar chart
+    plt.figure(figsize=(8, 6))
+    plt.bar(days_of_week, weekly_publications)
+    plt.title('Publication Frequency by Day of the Week')
+    plt.xlabel('Day of the Week')
+    plt.ylabel('Number of Publications')
+    plt.show()
