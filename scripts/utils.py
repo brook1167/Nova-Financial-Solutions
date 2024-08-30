@@ -7,7 +7,9 @@ import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-
+from collections import Counter
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 def read_csv(file_path):
     return pd.read_csv(file_path)
 
@@ -110,3 +112,21 @@ def perform_sentiment_analysis(df, column='headline'):
     df['sentiment_scores'] = df[column].apply(lambda text: sentiment_analyzer.polarity_scores(text))
     df['sentiment'] = df['sentiment_scores'].apply(lambda scores: 'positive' if scores['compound'] > 0 else ('negative' if scores['compound'] < 0 else 'neutral'))
     return df
+
+def perform_topic_modeling(df, column='headline', topics_count=5, words_count=10):
+
+    # Tokenize and vectorize the text in the specified column
+    vectorizer = CountVectorizer(max_df=0.95, min_df=2, stop_words='english')
+    doc_term_matrix = vectorizer.fit_transform(df[column])
+
+    # Apply Latent Dirichlet Allocation for topic modeling
+    lda_model = LatentDirichletAllocation(n_components=topics_count, random_state=42)
+    lda_model.fit(doc_term_matrix)
+    
+    feature_names = vectorizer.get_feature_names_out()
+    extracted_topics = []
+    for idx, topic in enumerate(lda_model.components_):
+        top_words = [(feature_names[i], topic[i]) for i in topic.argsort()[:-words_count - 1:-1]]
+        extracted_topics.append(top_words)
+    
+    return extracted_topics
