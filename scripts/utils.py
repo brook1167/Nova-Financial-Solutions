@@ -3,7 +3,10 @@ from pandas.tseries.offsets import MonthEnd
 import matplotlib.pyplot as plt
 import  matplotlib.dates as mdates
 import  matplotlib.dates as mdates
-
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 
 def read_csv(file_path):
     return pd.read_csv(file_path)
@@ -95,3 +98,15 @@ def plot_publication_trends(date_analysis):
     plt.setp(axes[1, 1].xaxis.get_majorticklabels(), rotation=45, ha='right')
     plt.tight_layout()
     return fig
+
+# Download necessary NLTK resources
+nltk.download('vader_lexicon')
+nltk.download('punkt')
+nltk.download('stopwords')
+
+# Perform sentiment analysis on the specified text column, defaulting to 'headline'
+def perform_sentiment_analysis(df, column='headline'):
+    sentiment_analyzer = SentimentIntensityAnalyzer()
+    df['sentiment_scores'] = df[column].apply(lambda text: sentiment_analyzer.polarity_scores(text))
+    df['sentiment'] = df['sentiment_scores'].apply(lambda scores: 'positive' if scores['compound'] > 0 else ('negative' if scores['compound'] < 0 else 'neutral'))
+    return df
