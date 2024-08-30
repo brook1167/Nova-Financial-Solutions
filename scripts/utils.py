@@ -3,6 +3,7 @@ from pandas.tseries.offsets import MonthEnd
 import matplotlib.pyplot as plt
 import  matplotlib.dates as mdates
 import  matplotlib.dates as mdates
+import re
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from nltk.corpus import stopwords
@@ -10,6 +11,8 @@ from nltk.tokenize import word_tokenize
 from collections import Counter
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
+
+
 def read_csv(file_path):
     return pd.read_csv(file_path)
 
@@ -200,4 +203,47 @@ def plot_publication_frequency_by_day(df, date_column='date'):
     plt.title('Publication Frequency by Day of the Week')
     plt.xlabel('Day of the Week')
     plt.ylabel('Number of Publications')
+    plt.show()
+
+
+def get_top_publisher_domains(df, publisher_column='publisher', top_n=10):
+    def extract_domain(email):
+        match = re.search(r"@[\w.]+", email)
+        if match:
+            return match.group()[1:]
+        return email
+
+    # Apply the extract_domain function to the specified publisher column
+    df["publisher_domain"] = df[publisher_column].apply(extract_domain)
+
+    # Count the occurrences of each publisher domain
+    domain_counts = df["publisher_domain"].value_counts()
+
+    # Return the top N publisher domains
+    return domain_counts.head(top_n)
+
+
+def plot_top_publisher_domains(df, publisher_column='publisher', top_n=10):
+    def extract_domain(email):
+        match = re.search(r"@[\w.]+", email)
+        if match:
+            return match.group()[1:]
+        return email
+
+    # Apply the extract_domain function to the specified publisher column
+    df["publisher_domain"] = df[publisher_column].apply(extract_domain)
+
+    # Count the occurrences of each publisher domain
+    domain_counts = df["publisher_domain"].value_counts()
+
+    # Get the top N publisher domains
+    top_domains = domain_counts.head(top_n)
+
+    # Plot the results
+    plt.figure(figsize=(10, 6))
+    plt.bar(top_domains.index, top_domains.values)
+    plt.xlabel("Publisher Domain")
+    plt.ylabel("Count")
+    plt.title(f"Top {top_n} Publisher Domains")
+    plt.xticks(rotation=45, ha='right')
     plt.show()
