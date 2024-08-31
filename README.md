@@ -52,12 +52,12 @@ company). For example (AAPL: Apple)
 
 Follow the instructions below to set up and run the project on your local machine.
 
-        Prerequisites
-        Ensure you have the following installed on your system:
+Prerequisites
+Ensure you have the following installed on your system:
         
-        Python 3.x
-        pip
-        virtualenv
+Python 3.x
+pip
+virtualenv
         
 
     1. Clone the repository
