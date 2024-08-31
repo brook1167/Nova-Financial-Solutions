@@ -1,10 +1,10 @@
 # Nova-Financial-Solutions-Data-Analysis
 
-# Business Objective
+## Business Objective
 
 Nova Financial Solutions aims to enhance its predictive analytics capabilities to significantly boost its financial forecasting accuracy and operational efficiency through advanced data analysis. In this project, the primary task is to conduct a rigorous analysis of the financial news dataset. The focus of the analysis is two-fold:
 
-# Sentiment Analysis:
+## Sentiment Analysis:
 
 Perform sentiment analysis on the ‘headline’ text to quantify the tone and sentiment expressed in financial news. This will involve using natural language processing (NLP) techniques to derive sentiment scores, which can be associated with the respective 'Stock Symbol' to understand the emotional context surrounding stock-related news.
 
