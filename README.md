@@ -92,7 +92,7 @@ Follow the instructions below to set up and run the project on your local machin
     
     5. Run the application
     
-    After installing the dependencies, you are all set! Run the application or script as       needed.
+    After installing the dependencies, you are all set! Run the application or script as needed.
     
     
     
