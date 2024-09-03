@@ -11,7 +11,7 @@ from nltk.tokenize import word_tokenize
 from collections import Counter
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
-
+import talib as ta
 
 def read_csv(file_path):
     return pd.read_csv(file_path)
@@ -104,7 +104,7 @@ def plot_publication_trends(date_analysis):
     plt.tight_layout()
     return fig
 
-# Download necessary NLTK resources
+Download necessary NLTK resources
 nltk.download('vader_lexicon')
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -247,3 +247,10 @@ def plot_top_publisher_domains(df, publisher_column='publisher', top_n=10):
     plt.title(f"Top {top_n} Publisher Domains")
     plt.xticks(rotation=45, ha='right')
     plt.show()
+
+
+def technical_indicators(df):
+    df['SMA_50'] = ta.SMA(df['Close'], timeperiod=50)
+    df['RSI'] = ta.RSI(df['Close'], timeperiod=14)
+    df['MACD'], df['MACD_Signal'], _ = ta.MACD(df['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
+    return df
